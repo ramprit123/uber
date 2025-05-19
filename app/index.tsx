@@ -2,7 +2,7 @@ import { View, Text } from 'react-native';
 
 const Home = () => {
   return (
-    <View>
+    <View className="flex">
       <Text>Home</Text>
     </View>
   );
