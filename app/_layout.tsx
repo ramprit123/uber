@@ -1,12 +1,11 @@
-import 'react-native-url-polyfill/auto';
-
 import '../global.css';
 import { Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { withClerkProvider } from '../components/ClerkProvider';
 
-export default function Layout() {
+function Layout() {
   SplashScreen.preventAutoHideAsync();
   const fonts = {
     'PlusJakartaSans-Bold': require('../assets/fonts/PlusJakartaSans-Bold.ttf'),
@@ -37,3 +36,5 @@ export default function Layout() {
     </Stack>
   );
 }
+
+export default withClerkProvider(Layout);

@@ -1,15 +1,22 @@
+import { useAuth } from '@clerk/clerk-expo';
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { View, Text } from 'react-native';
 
 const Home = () => {
   const router = useRouter();
+  const { sessionId } = useAuth();
+
   useEffect(() => {
-    let timer = setTimeout(() => {
-      router.push('/(auth)/welcome');
-    }, 1000);
-    return () => clearTimeout(timer); // Clear the timer on unmount to avoid memory leakag
-  }, [router]);
+    if (sessionId) {
+      router.replace('/(tabs)/home');
+    } else {
+      const timer = setTimeout(() => {
+        router.push('/(auth)/welcome');
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [sessionId, router]);
 
   return (
     <View className="flex-1 items-center justify-center bg-white">

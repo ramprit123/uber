@@ -1,5 +1,7 @@
+import { useOAuth, useSignIn } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
 import {
   Image,
@@ -12,12 +14,55 @@ import {
 } from 'react-native';
 
 const SignIn = () => {
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const { signIn, setActive } = useSignIn();
+  const { startOAuthFlow } = useOAuth({ strategy: 'oauth_google' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSignIn = () => {
-    console.log({ email, password });
+  const handleSignIn = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      if (!signIn || !setActive) throw new Error('Auth not ready');
+      const result = await signIn.create({
+        identifier: identifier.trim(),
+        password,
+      });
+      if (result.createdSessionId) {
+        await setActive({ session: result.createdSessionId });
+        router.replace('/(tabs)/home');
+      } else {
+        setError('Sign in failed: No session created');
+      }
+    } catch (err: any) {
+      setError(err.errors?.[0]?.message || err.message || 'Sign in failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      if (!setActive) throw new Error('Auth not ready');
+      const result = await startOAuthFlow();
+      if (result.createdSessionId) {
+        await setActive({ session: result.createdSessionId });
+        router.replace('/');
+      } else if (result?.authSessionResult?.type === 'success' && result.authSessionResult.url) {
+        await WebBrowser.openBrowserAsync(result.authSessionResult.url);
+      } else {
+        setError('Google sign in failed: No session or redirect');
+      }
+    } catch (err: any) {
+      setError(err.errors?.[0]?.message || err.message || 'Google sign in failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -37,12 +82,12 @@ const SignIn = () => {
           <Ionicons name="mail-outline" size={20} color="#666" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="Enter email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
+            placeholder="Enter email or username"
+            value={identifier}
+            onChangeText={setIdentifier}
             autoCapitalize="none"
             placeholderTextColor="#666"
+            keyboardType="email-address"
           />
         </View>
 
@@ -65,14 +110,20 @@ const SignIn = () => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.signUpButton} onPress={handleSignIn}>
-          <Text style={styles.signUpButtonText}>Sign Up</Text>
+        <TouchableOpacity style={styles.signUpButton} onPress={handleSignIn} disabled={loading}>
+          <Text style={styles.signUpButtonText}>{loading ? 'Signing In...' : 'Sign In'}</Text>
         </TouchableOpacity>
+        {error ? (
+          <Text style={{ color: 'red', textAlign: 'center', marginTop: 10 }}>{error}</Text>
+        ) : null}
 
         <Text style={styles.orText}>Or</Text>
 
-        <TouchableOpacity style={styles.googleButton}>
-          <Image source={require('../../assets/images/google.png')} style={styles.googleIcon} />
+        <TouchableOpacity
+          style={styles.googleButton}
+          onPress={handleGoogleSignIn}
+          disabled={loading}>
+          <Image source={require('~/assets/icons/google.png')} style={styles.googleIcon} />
           <Text style={styles.googleButtonText}>Log In with Google</Text>
         </TouchableOpacity>
 
