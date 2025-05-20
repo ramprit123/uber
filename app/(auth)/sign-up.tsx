@@ -1,4 +1,12 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ScrollView,
+} from 'react-native';
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -10,20 +18,22 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignUp = () => {
-    // Implement sign up logic here
     console.log({ name, email, password });
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      showsHorizontalScrollIndicator={false}
+      showsVerticalScrollIndicator={false}>
       <Image
-        source={require('../../assets/images/wheel.jpg')}
+        source={require('~/assets/images/signup-car.png')}
         style={styles.backgroundImage}
         resizeMode="cover"
       />
       <View style={styles.content}>
         <Text style={styles.title}>Create Your Account</Text>
-        
+
         <View style={styles.inputContainer}>
           <Ionicons name="person-outline" size={20} color="#666" style={styles.icon} />
           <TextInput
@@ -59,7 +69,11 @@ const SignUp = () => {
             placeholderTextColor="#666"
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-            <Ionicons name={showPassword ? "eye-outline" : "eye-off-outline"} size={20} color="#666" />
+            <Ionicons
+              name={showPassword ? 'eye-outline' : 'eye-off-outline'}
+              size={20}
+              color="#666"
+            />
           </TouchableOpacity>
         </View>
 
@@ -70,10 +84,7 @@ const SignUp = () => {
         <Text style={styles.orText}>Or</Text>
 
         <TouchableOpacity style={styles.googleButton}>
-          <Image
-            source={require('../../assets/images/google.png')}
-            style={styles.googleIcon}
-          />
+          <Image source={require('../../assets/images/google.png')} style={styles.googleIcon} />
           <Text style={styles.googleButtonText}>Log In with Google</Text>
         </TouchableOpacity>
 
@@ -84,7 +95,7 @@ const SignUp = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -102,7 +113,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 20,
-    paddingTop: 60,
+    paddingTop: 260,
   },
   title: {
     fontSize: 28,
