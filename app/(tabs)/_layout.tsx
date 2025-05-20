@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
-import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import TabIcon from '~/components/TabIcon';
 
 const TabLayout = () => {
   return (
@@ -25,32 +25,33 @@ const TabLayout = () => {
         <Tabs.Screen
           name="home"
           options={{
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="home" size={30} color={color} />
+            tabBarIcon: ({ color, focused }) => (
+              <TabIcon name="home" color={color} focused={focused} />
             ),
           }}
         />
-
         <Tabs.Screen
           name="rides"
           options={{
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="car" size={30} color={color} />
+            tabBarIcon: ({ color, focused }) => (
+              <TabIcon name="map" color={color} focused={focused} />
             ),
           }}
         />
         <Tabs.Screen
           name="chat"
           options={{
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="chat" size={30} color={color} />
+            tabBarIcon: ({ color, focused }) => (
+              <TabIcon name="chat" color={color} focused={focused} />
             ),
           }}
         />
         <Tabs.Screen
           name="profile"
           options={{
-            tabBarIcon: ({ color }) => <Ionicons name="person" size={30} color={color} />,
+            tabBarIcon: ({ color, focused }) => (
+              <TabIcon name="person" color={color} focused={focused} />
+            ),
           }}
         />
       </Tabs>
