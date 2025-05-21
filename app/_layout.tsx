@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { withClerkProvider } from '../components/ClerkProvider';
+import { ReactQueryProvider } from '../components/ReactQueryProvider';
 
 function Layout() {
   SplashScreen.preventAutoHideAsync();
@@ -29,11 +30,13 @@ function Layout() {
     return null;
   }
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-    </Stack>
+    <ReactQueryProvider>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      </Stack>
+    </ReactQueryProvider>
   );
 }
 
